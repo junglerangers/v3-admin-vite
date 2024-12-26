@@ -5,7 +5,7 @@ const COLOR_WEAKNESS = "color-weakness"
 
 const classList = document.documentElement.classList
 
-/** 初始化 */
+/** 初始化(是从根元素的class上来增添而实现的) */
 function initGreyAndColorWeakness() {
   const settingsStore = useSettingsStore()
   watchEffect(() => {

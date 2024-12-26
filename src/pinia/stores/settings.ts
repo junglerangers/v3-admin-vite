@@ -4,11 +4,18 @@ import { layoutsConfig } from "@/layouts/config"
 import { pinia } from "@/pinia"
 import { setLayoutsConfig } from "@@/utils/cache/local-storage"
 
+// 整体的逻辑是使用的时候,将整个对象中的每个属性都封装成ref,然后对每个ref进行watch
+// 存储的时候将每个属性进行解箱,还原成正常的值,然后进行存储
+// 这样子存储和取用的时候就都使用了相同的数据类型
+
 type SettingsStore = {
-  // 使用映射类型来遍历 LayoutsConfig 对象的键
+  // 使用映射类型来遍历 LayoutsConfig 对象的键,将每个属性进行Ref封装
   [Key in keyof LayoutsConfig]: Ref<LayoutsConfig[Key]>
 }
 
+/**
+ * keyof 返回的是一个联合类型
+ */
 type SettingsStoreKey = keyof SettingsStore
 
 export const useSettingsStore = defineStore("settings", () => {
@@ -20,7 +27,7 @@ export const useSettingsStore = defineStore("settings", () => {
     const refValue = ref(value)
     // @ts-expect-error ignore
     state[key as SettingsStoreKey] = refValue
-    // 监听每个响应式变量
+    // 监听每个响应式变量,如果任何设置项有变化,就将整个设置的ref的值转换为原生的值,然后进行存储,这里watch的目的是为了及时保存被更新后的数据
     watch(refValue, () => {
       // 缓存
       const settings = getCacheData()

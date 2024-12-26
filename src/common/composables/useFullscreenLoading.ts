@@ -1,5 +1,9 @@
 import type { LoadingOptions } from "element-plus"
 
+/**
+ * 粗略来看,就是将一个函数封装成一个异步函数吗?
+ * 但是如果原本函数就已经是异步函数了,那不就是Promise<Promise<T>>了吗
+ */
 interface UseFullscreenLoading {
   <T extends (...args: Parameters<T>) => ReturnType<T>>(
     fn: T,

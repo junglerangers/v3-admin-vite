@@ -10,7 +10,7 @@ interface PaginationData {
 const DEFAULT_PAGINATION_DATA = {
   total: 0,
   currentPage: 1,
-  pageSizes: [10, 20, 50],
+  pageSizes: [10, 20, 50], // 每页的数据量大小选择
   pageSize: 10,
   layout: "total, sizes, prev, pager, next, jumper"
 }

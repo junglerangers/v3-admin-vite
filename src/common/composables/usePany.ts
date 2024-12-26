@@ -1,5 +1,5 @@
 function initStarNotification() {
-  setTimeout(() => {
+  setTimeout(() => { // JavaScript 是一个单线程的引擎
     ElNotification({
       title: "为爱发电！",
       type: "success",

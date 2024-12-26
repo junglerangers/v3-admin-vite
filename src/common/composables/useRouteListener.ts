@@ -1,5 +1,5 @@
-import type { RouteLocationNormalized } from "vue-router"
-import mitt, { type Handler } from "mitt"
+import type { RouteLocationNormalized } from "vue-router" // 类型的别名中可以通过extends ? 的形式来动态选择类型,类型别名中的"?"本质上就是三元通配符中的"?"
+import mitt, { type Handler } from "mitt" // 支持从代码层面触发任何事件,或者监听事件
 
 /** 回调函数的类型 */
 type Callback = (route: RouteLocationNormalized) => void

@@ -3,11 +3,11 @@
 import { resolve } from "node:path"
 import vue from "@vitejs/plugin-vue"
 import vueJsx from "@vitejs/plugin-vue-jsx"
-import UnoCSS from "unocss/vite"
-import AutoImport from "unplugin-auto-import/vite"
-import SvgComponent from "unplugin-svg-component/vite"
+import UnoCSS from "unocss/vite" // 原子化的css,允许自定义统一的css样式
+import AutoImport from "unplugin-auto-import/vite" // 自动导入部分Vite的官方API,比如ref等,无需再手工导入
+import SvgComponent from "unplugin-svg-component/vite" // 将本地的svg文件生成一个组件
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers"
-import Components from "unplugin-vue-components/vite"
+import Components from "unplugin-vue-components/vite" // 自动import Vue 中的组件,不需要再手工import那些组件
 import { defineConfig, loadEnv } from "vite"
 import svgLoader from "vite-svg-loader"
 
@@ -101,21 +101,21 @@ export default defineConfig(({ mode }) => {
       SvgComponent({
         iconDir: [resolve(__dirname, "src/common/assets/icons")],
         preserveColor: resolve(__dirname, "src/common/assets/icons/preserve-color"),
-        dts: true,
+        dts: true, // 是否自动生成d.ts文件
         dtsDir: resolve(__dirname, "types/auto")
       }),
       // 原子化 CSS
       UnoCSS(),
       // 自动按需导入 API
       AutoImport({
-        imports: ["vue", "vue-router", "pinia"],
-        dts: "types/auto/auto-imports.d.ts",
+        imports: ["vue", "vue-router", "pinia"], // 需要全局导入的API
+        dts: "types/auto/auto-imports.d.ts", // 针对typescript 生成的声明性文件
         resolvers: [ElementPlusResolver()]
       }),
-      // 自动按需导入组件
+      // 自动按需导入组件(指的是用户自定义的那些Vue的组件)
       Components({
-        dts: "types/auto/components.d.ts",
-        resolvers: [ElementPlusResolver()]
+        dts: "types/auto/components.d.ts", // 针对typescript 生成的声明性文件
+        resolvers: [ElementPlusResolver()] // 加入这个解析器后,ElementPlus的组件就也不需要声明了
       })
     ],
     // Configuring Vitest: https://cn.vitest.dev/config

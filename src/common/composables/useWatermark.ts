@@ -23,6 +23,7 @@ const DEFAULT_CONFIG = {
 
 type DefaultConfig = typeof DEFAULT_CONFIG
 
+/** 它定义了三个观测器,分别观测水印元素自身attribute,父级元素的childList,以及父级元素的size(将水印元素的大小与父级元素的大小进行同步) */
 interface Observer {
   watermarkElMutationObserver?: MutationObserver
   parentElMutationObserver?: MutationObserver
@@ -51,7 +52,7 @@ export function useWatermark(parentEl: Ref<HTMLElement | null> = bodyEl) {
     parentElResizeObserver: undefined
   }
 
-  // 设置水印
+  // 设置水印,这里的水印本质上就是对一个字符串进行加工封装生成的图片
   const setWatermark = (text: string, config: Partial<DefaultConfig> = {}) => {
     if (!parentEl.value) return console.warn("请在 DOM 挂载完成后再调用 setWatermark 方法设置水印")
     // 备份文本
@@ -75,7 +76,7 @@ export function useWatermark(parentEl: Ref<HTMLElement | null> = bodyEl) {
     watermarkEl.style.left = "0"
     watermarkEl.style.position = watermarkElPosition
     watermarkEl.style.zIndex = "99999"
-    const { clientWidth, clientHeight } = parentEl.value!
+    const { clientWidth, clientHeight } = parentEl.value!// exclamation is the non-null and non-undefined asssertion
     updateWatermarkEl({ width: clientWidth, height: clientHeight })
     // 设置水印容器为相对定位
     parentEl.value!.style.position = parentElPosition
@@ -83,7 +84,7 @@ export function useWatermark(parentEl: Ref<HTMLElement | null> = bodyEl) {
     parentEl.value!.appendChild(watermarkEl)
   }
 
-  // 更新水印元素
+  // 更新水印元素,属性初始化,然后将一些公共的修改方法放在了Update中
   const updateWatermarkEl = (
     options: Partial<{
       width: number
@@ -96,7 +97,7 @@ export function useWatermark(parentEl: Ref<HTMLElement | null> = bodyEl) {
     options.height && (watermarkEl.style.height = `${options.height}px`)
   }
 
-  // 创建 base64 图片
+  // 创建 base64 图片(将传入的文本进行组合,然后生成一个水印)
   const createBase64 = () => {
     const { color, opacity, size, family, angle, width, height } = mergeConfig
     const canvasEl = document.createElement("canvas")
@@ -177,13 +178,14 @@ export function useWatermark(parentEl: Ref<HTMLElement | null> = bodyEl) {
     // 当观察到变动时执行的回调
     const mutationCallback = debounce((mutationList: MutationRecord[]) => {
       // 水印的防御（防止用户手动删除水印元素或通过 CSS 隐藏水印）
+      // 内部的debounce是不是不是必须的,所以可以去掉?
       mutationList.forEach(
         debounce((mutation: MutationRecord) => {
           switch (mutation.type) {
-            case "attributes":
+            case "attributes": // 如果是水印元素被手工刚更新了,就自动重置回来
               mutation.target === watermarkEl && updateWatermark()
               break
-            case "childList":
+            case "childList": // 如果是水印元素被移除了,就重新添加回来
               mutation.removedNodes.forEach((item) => {
                 item === watermarkEl && targetNode.appendChild(watermarkEl)
               })
