@@ -7,15 +7,21 @@ interface Sidebar {
   withoutAnimation: boolean
 }
 
-/** 设置侧边栏状态本地缓存 */
+/**
+ * 设置侧边栏状态本地缓存,主要目的是为了将布尔值映射成字符串常量,传递字符串常量类型有一个好处,就是其意思直接就可以看出来
+ * @param opened
+ */
 function handleSidebarStatus(opened: boolean) {
   opened ? setSidebarStatus(SIDEBAR_OPENED) : setSidebarStatus(SIDEBAR_CLOSED)
 }
 
+/**
+ * 存储侧边栏的状态,设备的类型
+ */
 export const useAppStore = defineStore("app", () => {
   // 侧边栏状态
   const sidebar: Sidebar = reactive({
-    opened: getSidebarStatus() !== SIDEBAR_CLOSED,
+    opened: getSidebarStatus() !== SIDEBAR_CLOSED, // 这个操作的目的是为了将其从字符串常量类型转变为布尔值
     withoutAnimation: false
   })
 

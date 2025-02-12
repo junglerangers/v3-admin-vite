@@ -18,6 +18,9 @@ type SettingsStore = {
  */
 type SettingsStoreKey = keyof SettingsStore
 
+/**
+ * 管理整个页面的布局配置,同时对该布局配置的每个选项进行watch
+ */
 export const useSettingsStore = defineStore("settings", () => {
   // 状态对象
   const state = {} as SettingsStore

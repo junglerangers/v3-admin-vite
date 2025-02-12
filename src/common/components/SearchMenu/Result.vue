@@ -13,6 +13,7 @@ const modelValue = defineModel<RouteRecordName | undefined>({ required: true })
 
 const instance = getCurrentInstance()
 
+/** 搜索结果的滚动条高度 */
 const scrollbarHeight = ref<number>(0)
 
 /** 菜单的样式 */
@@ -24,7 +25,7 @@ function itemStyle(item: RouteRecordRaw) {
   }
 }
 
-/** 鼠标移入 */
+/** 鼠标移入,这是为了解决按键冲突的问题 */
 function handleMouseenter(item: RouteRecordRaw) {
   // 如果上键或下键与 mouseenter 事件同时生效，则以上下键为准，不执行该函数的赋值逻辑
   if (props.isPressUpOrDown) return
@@ -37,12 +38,12 @@ function getScrollbarHeight() {
   scrollbarHeight.value = Number((window.innerHeight * 0.4).toFixed(1))
 }
 
-/** 根据下标计算到顶部的距离 */
+/** 根据下标实时计算到顶部的距离(VUE中直接操作DOM中组件的方式不是那么的友好) */
 function getScrollTop(index: number) {
   const currentInstance = instance?.proxy?.$refs[`resultItemRef${index}`] as HTMLDivElement[]
   if (!currentInstance) return 0
   const currentRef = currentInstance[0]
-  // 128 = 两个 result-item （56 + 56 = 112）高度与上下 margin（8 + 8 = 16）大小之和
+  // 128 = 两个 result-item （56 + 56 = 112）高度与上下 margin（8 + 8 = 16）大小之和;找到当前元素与页面上方之间的距离
   const scrollTop = currentRef.offsetTop + 128
   return scrollTop > scrollbarHeight.value ? scrollTop - scrollbarHeight.value : 0
 }

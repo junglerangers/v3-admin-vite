@@ -6,6 +6,9 @@ import { setToken as _setToken, getToken, removeToken } from "@@/utils/cache/coo
 import { useSettingsStore } from "./settings"
 import { useTagsViewStore } from "./tags-view"
 
+/**
+ * 管理用户信息,包括token,角色,姓名,
+ */
 export const useUserStore = defineStore("user", () => {
   const token = ref<string>(getToken() || "")
   const roles = ref<string[]>([])

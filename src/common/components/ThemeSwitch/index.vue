@@ -10,6 +10,7 @@ function handleChangeTheme({ clientX, clientY }: MouseEvent, themeName: ThemeNam
     Math.max(clientX, window.innerWidth - clientX),
     Math.max(clientY, window.innerHeight - clientY)
   )
+  // 这里的部分实现了整个颜色变化的动画功能
   const style = document.documentElement.style
   style.setProperty("--v3-theme-x", `${clientX}px`)
   style.setProperty("--v3-theme-y", `${clientY}px`)

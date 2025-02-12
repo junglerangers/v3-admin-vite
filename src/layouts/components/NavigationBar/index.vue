@@ -17,7 +17,8 @@ const router = useRouter()
 const appStore = useAppStore()
 const userStore = useUserStore()
 const settingsStore = useSettingsStore()
-const { showNotify, showThemeSwitch, showScreenfull, showSearchMenu } = storeToRefs(settingsStore)
+// 因为store中的值也是不能直接进行解构的,所以需要通过storeToRefs这个函数来进行解构,从而保持它的Ref
+const { showNotify, showThemeSwitch, showScreenfull, showSearchMenu } = storeToRefs(settingsStore) // 将store中的值映射成ref类型的值
 
 /** 切换侧边栏 */
 function toggleSidebar() {

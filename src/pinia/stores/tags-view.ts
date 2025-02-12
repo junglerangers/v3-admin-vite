@@ -5,6 +5,9 @@ import { useSettingsStore } from "./settings"
 
 export type TagView = Partial<RouteLocationNormalized>
 
+/**
+ * @description 存储缓存的标签栏以及访问过的标签栏
+ */
 export const useTagsViewStore = defineStore("tags-view", () => {
   const { cacheTagsView } = useSettingsStore()
   const visitedViews = ref<TagView[]>(cacheTagsView ? getVisitedViews() : [])
@@ -21,7 +24,7 @@ export const useTagsViewStore = defineStore("tags-view", () => {
     // 检查是否已经存在相同的 visitedView
     const index = visitedViews.value.findIndex(v => v.path === view.path)
     if (index !== -1) {
-      // 防止 query 参数丢失
+      // 防止 query 参数丢失,如果fullPath不相等,就重新赋值,主要是为了保存query的参数
       visitedViews.value[index].fullPath !== view.fullPath && (visitedViews.value[index] = { ...view })
     } else {
       // 添加新的 visitedView

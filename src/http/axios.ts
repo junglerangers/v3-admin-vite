@@ -95,7 +95,7 @@ function createInstance() {
   return instance
 }
 
-/** 创建请求方法 */
+/** 创建请求方法(没有函数名称,有点类似于匿名函数?) */
 function createRequest(instance: AxiosInstance) {
   return <T>(config: AxiosRequestConfig): Promise<T> => {
     const token = getToken()

@@ -16,7 +16,7 @@ const props = withDefaults(defineProps<Props>(), {
   element: "html",
   openTips: "全屏",
   exitTips: "退出全屏",
-  content: false
+  content: false// 判断要放大的是内容还是页面,内容全屏与页面全屏采用了不同的逻辑
 })
 
 const CONTENT_LARGE = "content-large"
@@ -39,13 +39,13 @@ function handleFullscreenClick() {
 function handleFullscreenChange() {
   isFullscreen.value = screenfull.isFullscreen
   // 退出全屏时清除相关的 class
-  isFullscreen.value || classList.remove(CONTENT_LARGE, CONTENT_FULL)
+  isFullscreen.value || classList.remove(CONTENT_LARGE, CONTENT_FULL) // 如果是全屏就不执行,如果不是全屏就执行后面的操作
 }
 
 watchEffect((onCleanup) => {
   if (isEnabled) {
     // 挂载组件时自动执行
-    screenfull.on("change", handleFullscreenChange)
+    screenfull.on("change", handleFullscreenChange) // 增加屏幕放大或缩小时的监听事件
     // 卸载组件时自动执行
     onCleanup(() => {
       screenfull.off("change", handleFullscreenChange)
@@ -66,7 +66,7 @@ function handleContentLargeClick() {
 }
 
 function handleContentFullClick() {
-  // 取消内容区放大
+  // 取消内容区放大,如果在内容已经放大时选择全屏,就先取消放大,然后再进行全屏操作
   isContentLarge.value && handleContentLargeClick()
   // 内容区全屏时，将不需要的组件隐藏
   classList.add(CONTENT_FULL)

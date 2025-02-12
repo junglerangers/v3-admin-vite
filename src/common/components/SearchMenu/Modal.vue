@@ -10,16 +10,22 @@ import Result from "./Result.vue"
 
 /** 控制 modal 显隐 */
 const modelValue = defineModel<boolean>({ required: true })
-
+/** 该用户所具有的所有路由 */
 const router = useRouter()
 const { isMobile } = useDevice()
 
 const inputRef = ref<HTMLInputElement | null>(null)
+// 用于返回一个准确的类或者一个构造函数的实例类型,因为这里的泛型可能是抽象的,比如说Extends的
+// 比如说如果是T Extends animal 那么返回的类型就只能是 typeof animal,但是使用了IntesnceType,如果我们传进去的是Dog Extends Animal,就能准确返回animal
+// 然后,就是这两个变量的作用是什么?
+/** reference to scrollbar component, but I can't find where to give the valu */
 const scrollbarRef = ref<InstanceType<typeof ElScrollbar> | null>(null)
 const resultRef = ref<InstanceType<typeof Result> | null>(null)
-
+/** 用户输入的检索关键字 */
 const keyword = ref<string>("")
+/** 检索到的结果 */
 const result = shallowRef<RouteRecordRaw[]>([])
+/** 当前选中的路由 */
 const activeRouteName = ref<RouteRecordName | undefined>(undefined)
 /** 是否按下了上键或下键（用于解决和 mouseenter 事件的冲突） */
 const isPressUpOrDown = ref<boolean>(false)
@@ -29,13 +35,17 @@ const modalWidth = computed(() => (isMobile.value ? "80vw" : "40vw"))
 /** 树形菜单 */
 const menus = computed(() => cloneDeep(usePermissionStore().routes))
 
-/** 搜索（防抖） */
+/**
+ * @name 搜索（防抖）
+ * @description 从菜单中检索符合条件的菜单
+ * ? 每次检索的时候都要重新将树形菜单扁平化,是不是不太合理?
+ */
 const handleSearch = debounce(() => {
   const flatMenus = flatTree(menus.value)
   const _keywords = keyword.value.toLocaleLowerCase().trim()
   result.value = flatMenus.filter(menu => keyword.value ? menu.meta?.title?.toLocaleLowerCase().includes(_keywords) : false)
-  // 默认选中搜索结果的第一项
   const length = result.value?.length
+  // 默认选中搜索结果的第一项
   activeRouteName.value = length > 0 ? result.value[0].name : undefined
 }, 500)
 
@@ -48,7 +58,10 @@ function flatTree(arr: RouteRecordRaw[], result: RouteRecordRaw[] = []) {
   return result
 }
 
-/** 关闭搜索对话框 */
+/**
+ * @name 关闭搜索窗口
+ * @description 不让用户察觉到数据的情况
+ */
 function handleClose() {
   modelValue.value = false
   // 延时处理防止用户看到重置数据的操作
@@ -58,7 +71,8 @@ function handleClose() {
   }, 200)
 }
 
-/** 根据下标位置进行滚动 */
+// #region 涉及到的键盘操作而所产生的相关逻辑
+/** 通过键盘操作修改了索引之后而产生的焦点变化,需要手动实现其页面的根据下标位置进行的滚动 */
 function scrollTo(index: number) {
   if (!resultRef.value) return
   const scrollTop = resultRef.value.getScrollTop(index)
@@ -136,6 +150,7 @@ function handleEnter() {
 function handleReleaseUpOrDown() {
   isPressUpOrDown.value = false
 }
+// #endregion
 </script>
 
 <template>

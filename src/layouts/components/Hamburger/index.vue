@@ -5,12 +5,13 @@ interface Props {
   isActive?: boolean
 }
 
+// 声明默认值的一种方式
 const props = withDefaults(defineProps<Props>(), {
   isActive: false
 })
 
 const emit = defineEmits<{
-  toggleClick: []
+  toggleClick: [] // 一种声明函数更简单的方式,函数名:[参数列表]
 }>()
 
 function toggleClick() {

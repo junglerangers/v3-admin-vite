@@ -11,6 +11,7 @@ export enum LayoutModeEnum {
   LeftTop = "left-top"
 }
 
+// 它将其都暴露出来的目的就是为了同时暴露出其值与其类型
 /** 侧边栏打开状态常量 */
 export const SIDEBAR_OPENED = "opened"
 
